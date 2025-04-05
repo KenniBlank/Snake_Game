@@ -1,10 +1,9 @@
-#define FPS (144)
+#define FPS (30)
 
-#define Snake_Head '█'
-#define Snake_Body {'▃', '▅', '▆'}  // Unicode U+2583, U+2585, U+2586
-#define Snake_Tail '▂'
+#define Snake_Head '@'
+#define Snake_Body '.'
 
-#define Apple '🍎'
+#define Apple '+'
 
 #define print(fmt, ...) \
 do { \
