@@ -1,12 +1,7 @@
-#define FPS (30)
+#define SNAKE_HEAD '@'
+#define SNAKE_BODY 'o'
 
-#define Snake_Head '@'
-#define Snake_Body '.'
+#define APPLE '+'
 
-#define Apple '+'
-
-#define print(fmt, ...) \
-do { \
-        printf(fmt, ##__VA_ARGS__); \
-        fflush(stdout); \
-} while(0)
+#define MIN_TERMINAL_WIDTH 10
+#define MIN_TERMINAL_HEIGHT 10
