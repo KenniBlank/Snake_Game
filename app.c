@@ -30,9 +30,11 @@ int main() {
         keypad(stdscr, true);
         nodelay(stdscr, true);
 
-        init_pair(1, COLOR_GREEN, COLOR_BLACK);
-        init_pair(2, COLOR_GREEN, COLOR_BLACK);
-        init_pair(3, COLOR_BLUE, COLOR_BLACK);
+        printf("\033[?3l");   // AI Line of Code: Tries to disable line spacing (may work or maynot)
+        init_pair(1, COLOR_RED, COLOR_BLACK); // Border Color
+        init_pair(2, COLOR_GREEN, COLOR_BLACK); // Food Color
+        init_pair(3, COLOR_BLUE, COLOR_BLACK); // Snake Color
+        init_pair(4, COLOR_BLACK, COLOR_WHITE); // Score Color
 
         // Get Terminal Size
         int max_x, max_y;
@@ -91,16 +93,16 @@ int main() {
 
 void init_game(Snake *snake, Food *food, int max_x, int max_y) {
     // Initialize snake
-    snake->length = 2;
-    snake->body = malloc(snake->length * sizeof(Position));
-    snake->direction = right;
+    snake -> length = 2;
+    snake -> body = malloc(snake -> length * sizeof(Position));
+    snake -> direction = right;
 
     // Place snake in the middle
     int start_x = max_x / 2;
     int start_y = max_y / 2;
-    for (int i = 0; i < snake->length; i++) {
-        snake->body[i].x = start_x - i;
-        snake->body[i].y = start_y;
+    for (int i = 0; i < snake -> length; i++) {
+        snake -> body[i].x = start_x - i;
+        snake -> body[i].y = start_y;
     }
 
     // Place initial food
@@ -114,34 +116,43 @@ void draw_game(WINDOW *win, Snake *snake, Food *food, int score) {
         int max_x, max_y;
         getmaxyx(win, max_y, max_x);
 
+        init_pair(1, COLOR_RED, COLOR_BLACK); // Border Color
+        init_pair(2, COLOR_GREEN, COLOR_BLACK); // Food Color
+        init_pair(3, COLOR_BLUE, COLOR_BLACK); // Snake Color
+        init_pair(4, COLOR_BLACK, COLOR_WHITE); // Score Color
+
         // Draw border
+        attron(COLOR_PAIR(1));
         for (int x = 0; x < max_x; x++) {
-                mvaddch(0, x, '#');
-                mvaddch(max_y-1, x, '#');
+                mvaddch(0, x, ACS_CKBOARD);
+                mvaddch(max_y-1, x, ACS_CKBOARD);
         }
         for (int y = 0; y < max_y; y++) {
-                mvaddch(y, 0, '#');
-                mvaddch(y, max_x-1, '#');
+                mvaddch(y, 0, ACS_CKBOARD);
+                mvaddch(y, max_x-1, ACS_CKBOARD);
         }
+        attroff(COLOR_PAIR(1));
+
+        attron(COLOR_PAIR(4));
+        mvprintw(0, 3, " Score: %d ", score);
+        attroff(COLOR_PAIR(4));
 
         // Draw snake
-        for (int i = 0; i < snake->length; i++) {
-                if (i == 0) {
-                        mvaddch(snake->body[i].y, snake->body[i].x, SNAKE_HEAD); // Head
-                } else {
-                        mvaddch(snake->body[i].y, snake->body[i].x, SNAKE_BODY); // Body
-                }
+        attron(COLOR_PAIR(3));
+        mvaddch(snake -> body[0].y, snake -> body[0].x, SNAKE_HEAD); // Head
+        for (int i = 1; i < snake -> length; i++) {
+                mvaddch(snake -> body[i].y, snake -> body[i].x, SNAKE_BODY); // Body
         }
+        attroff(COLOR_PAIR(3));
 
         // Draw food
-        if (!food->eaten) {
-                mvaddch(food->pos.y, food->pos.x, APPLE);
+        attron(COLOR_PAIR(2));
+        if (!food -> eaten) {
+                attron(COLOR_PAIR(2));
+                mvaddch(food -> pos.y, food -> pos.x, APPLE);
+                attroff(COLOR_PAIR(2));
         }
-
-        // Draw score
-        attron(COLOR_PAIR(1)); // Turn on red
-        mvprintw(0, 3, "Score: %d", score);
-        attroff(COLOR_PAIR(1)); // Turn off red
+        attroff(COLOR_PAIR(2));
 }
 
 void update_snake(Snake *snake, int max_x, int max_y) {
@@ -190,29 +201,29 @@ void handle_input(Snake *snake, bool *game_running) {
                 case KEY_UP:
                 case 'w':
                 case 'W':
-                        if (snake->direction != down) {
-                                snake->direction = up;
+                        if (snake -> direction != down) {
+                                snake -> direction = up;
                         }
                         break;
                 case KEY_RIGHT:
                 case 'd':
                 case 'D':
-                        if (snake->direction != left) {
-                                snake->direction = right;
+                        if (snake -> direction != left) {
+                                snake -> direction = right;
                         }
                         break;
                 case KEY_LEFT:
                 case 'a':
                 case 'A':
-                        if (snake->direction != right) {
-                                snake->direction = left;
+                        if (snake -> direction != right) {
+                                snake -> direction = left;
                         }
                         break;
                 case KEY_DOWN:
                 case 's':
                 case 'S':
-                        if (snake->direction != up) {
-                                snake->direction = down;
+                        if (snake -> direction != up) {
+                                snake -> direction = down;
                         }
                         break;
                 case 'q':

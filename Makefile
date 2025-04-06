@@ -1,19 +1,12 @@
 cc = gcc
-CFLAGS = -Wall -Wextra -Wshadow
+CFLAGS = -Wall -Wextra -Wshadow -O2
 LIBS = -lncurses
-RELEASEFLAGS = -O2
-DEBUGFLAGS = -g -DRELEASE
 
 SOURCE = app.c
 APP = "Snake Game"
 
-ifeq ($(BUILD),RELEASE)
-    CFLAGS += $(RELEASEFLAGS)
-else
-    CFLAGS += $(DEBUGFLAGS)
-endif
+all: compile run clean
 
-all: compile run
 compile:
 	$(cc) $(CFLAGS) $(LIBS) $(SOURCE) -o $(APP)
 
