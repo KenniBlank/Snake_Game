@@ -12,6 +12,7 @@
 #include "structures.h"
 
 void init_game(Snake *snake, Food *food, int max_x, int max_y);
+void Intro(int max_x, int max_y);
 void draw_game(WINDOW *win, Snake *snake, Food *food, int score);
 void update_snake(Snake *snake, int max_x, int max_y);
 bool check_collision(Snake *snake); // check if head collide with body
@@ -28,7 +29,6 @@ int main() {
         noecho();
         curs_set(0);
         keypad(stdscr, true);
-        nodelay(stdscr, true);
 
         printf("\033[?3l");   // AI Line of Code: Tries to disable line spacing (may work or maynot)
         init_pair(1, COLOR_RED, COLOR_BLACK); // Border Color
@@ -45,14 +45,18 @@ int main() {
                 return 1;
         }
 
+        Intro(max_x, max_y);
+
+        nodelay(stdscr, true);
+
         // Init Game Elements:
         int score = 0;
-        bool game_is_running = true;
         Snake snake;
         Food food;
-        init_game(&snake, &food, max_x, max_y);
-
+        bool game_is_running = true;
         __useconds_t delay = 100000;
+
+        init_game(&snake, &food, max_x, max_y);
 
         while (game_is_running) {
                 clear(); // Defined in n_curses
@@ -112,14 +116,24 @@ void init_game(Snake *snake, Food *food, int max_x, int max_y) {
     srand(time(NULL));
 }
 
+void Intro(int max_x, int max_y) {
+        attron(COLOR_PAIR(2));
+        mvprintw(max_y / 2, (max_x - strlen("Welcome to Snake Game")) / 2, "Welcome to Snake Game");
+        mvprintw(max_y / 2 + 1, (max_x - strlen("Press Any Key To Begin")) / 2, "Press Any Key To Begin");
+        attroff(COLOR_PAIR(2));
+
+        attron(COLOR_PAIR(3));
+        mvprintw(max_y / 2 - 5, 0, "Controls: ");
+        mvprintw(max_y / 2 - 4, 0, "\tWASD to move (Arrows can be used too)");
+        mvprintw(max_y / 2 - 3, 0, "\tQ to quit at \"Any\" time");
+        attroff(COLOR_PAIR(3));
+
+        getch();
+}
+
 void draw_game(WINDOW *win, Snake *snake, Food *food, int score) {
         int max_x, max_y;
         getmaxyx(win, max_y, max_x);
-
-        init_pair(1, COLOR_RED, COLOR_BLACK); // Border Color
-        init_pair(2, COLOR_GREEN, COLOR_BLACK); // Food Color
-        init_pair(3, COLOR_BLUE, COLOR_BLACK); // Snake Color
-        init_pair(4, COLOR_BLACK, COLOR_WHITE); // Score Color
 
         // Draw border
         attron(COLOR_PAIR(1));
@@ -263,12 +277,18 @@ int check_food_eaten(Snake *snake, Food *food) {
 }
 
 void game_over(int score, int max_x, int max_y) {
+        attron(COLOR_PAIR(1));
         mvprintw(max_y / 2, (max_x-9) / 2, "Game Over");
+        attroff(COLOR_PAIR(1));
 
         char *message = malloc(50 * sizeof(char));
         sprintf(message, "Final Score: %d", score);
+        attron(COLOR_PAIR(2));
         mvprintw(max_y / 2 + 1, (max_x - strlen(message)) / 2, message);
         free(message);
+        attroff(COLOR_PAIR(2));
+
+        mvprintw(max_y / 2 + 4, (max_x - strlen("Any Key To Continue..")) / 2, "Any Key To Continue..");
 
         refresh();
         nodelay(stdscr, false);

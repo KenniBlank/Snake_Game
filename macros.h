@@ -1,4 +1,4 @@
-#define SNAKE_HEAD '0'
+#define SNAKE_HEAD '@'
 #define SNAKE_BODY 'o'
 
 #define APPLE '*'
