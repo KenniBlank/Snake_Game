@@ -4,7 +4,7 @@ Created in C for terminal in Linux based system. (Should work the same in mac an
 
 How it looks:
 
-[Image](./game_look.jpg)
+![Image](./game_look.jpg)
 
 ## Controls:
 - **WASD** / **Arrows**: Movement
